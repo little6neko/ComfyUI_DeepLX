@@ -35,7 +35,7 @@ class DeepLX_Free:
         except :
             outStr = PyDeepLX.translate(text, source, target)     
             
-        return(outStr,)
+        return (outStr,)
 
 class DeepLX_translate:
     def __init__(self):
@@ -47,7 +47,7 @@ class DeepLX_translate:
             "required": {
                 "text": ("STRING", {"multiline": True, "default": ""},),
                 "source": (["auto", "ZH","EN","DE","JA"],{"default":"auto"}),
-                "target":  (["ZH","EN","DE","JA"],{"default":"EN"}),
+                "target":  (["PASS", "ZH","EN","DE","JA"],{"default":"EN"}),
                 "url":("STRING", {"multiline": False, "default": "https://api.deeplx.org/<api-key>/translate"},),
             }
         }
@@ -59,12 +59,12 @@ class DeepLX_translate:
     CATEGORY = "DeepLX"
 
     def gen(self, text:str,source,target,url):
-        result = ""
-        with open(key_json, 'r', encoding='utf-8') as file:  
-            # 读取文件内容  
-            key = file.read()  
-            # 打印文件内容  
-            print(key)  
+        if target == "PASS":
+            return (text,)
+
+        with open(key_json, 'r', encoding='utf-8') as file:
+            key = file.read()
+            print(key)
         
         if not key or key =="":
             print("No key provided!")
@@ -90,8 +90,8 @@ class DeepLX_translate:
                 result = data.get('data', " ")  
             else:  
                 print("请求失败，状态码：", response.status_code)
-                result= response.status_code
-        except :
-            result="error"
+                result = response.status_code
+        except:
+            result = "error"
                         
-        return(result,)
+        return (result,)
