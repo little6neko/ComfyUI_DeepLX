@@ -8,7 +8,7 @@ from PyDeepLX import PyDeepLX
 current_folder = os.path.dirname(os.path.abspath(__file__))
 key_json = os.path.join(current_folder, "key.txt")
 
-class CXH_DeepLX_Free:
+class DeepLX_Free:
  
     def __init__(self):
         pass
@@ -27,7 +27,7 @@ class CXH_DeepLX_Free:
     RETURN_NAMES = ("out",)
     FUNCTION = "gen"
     OUTPUT_NODE = False
-    CATEGORY = "CXH/DeepLX"
+    CATEGORY = "DeepLX"
 
     def gen(self, text:str,source,target):
         try:
@@ -37,7 +37,7 @@ class CXH_DeepLX_Free:
             
         return(outStr,)
 
-class CXH_DeepLX_translate:
+class DeepLX_translate:
     def __init__(self):
         pass
 
@@ -46,9 +46,9 @@ class CXH_DeepLX_translate:
         return {
             "required": {
                 "text": ("STRING", {"multiline": True, "default": ""},),
-                "source": (["auto", "ZH中文","EN英语","DE德语","JA日语"],{"default":"auto"}),
-                "target":  (["ZH中文","EN英语","DE德语","JA日语"],{"default":"EN英语"}),
-                "proxy":("STRING", {"multiline": False, "default": "https://deeplx.missuo.ru/translate?key="},),
+                "source": (["auto", "ZH","EN","DE","JA"],{"default":"auto"}),
+                "target":  (["ZH","EN","DE","JA"],{"default":"EN"}),
+                "url":("STRING", {"multiline": False, "default": "https://api.deeplx.org/<api-key>/translate"},),
             }
         }
 
@@ -56,9 +56,9 @@ class CXH_DeepLX_translate:
     RETURN_NAMES = ("out",)
     FUNCTION = "gen"
     OUTPUT_NODE = False
-    CATEGORY = "CXH/DeepLX"
+    CATEGORY = "DeepLX"
 
-    def gen(self, text:str,source,target,proxy):
+    def gen(self, text:str,source,target,url):
         result = ""
         with open(key_json, 'r', encoding='utf-8') as file:  
             # 读取文件内容  
@@ -66,12 +66,10 @@ class CXH_DeepLX_translate:
             # 打印文件内容  
             print(key)  
         
-        if key == None or key =="":
-            print("key == None")
+        if not key or key =="":
+            print("No key provided!")
 
-        url = proxy + key
-        if target !="auto":
-            target = target[:2]
+        url = url.replace("<api-key>", key)
 
         try:
             payload = json.dumps({
